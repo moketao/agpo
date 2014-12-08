@@ -1,0 +1,12 @@
+{
+	"type": "Up",
+	"arr": [
+		{
+			"type": "String",
+			"name": "name",
+			"desc": "用户名"
+		}
+	],
+	"name": "1000",
+	"desc": "登陆"
+}
