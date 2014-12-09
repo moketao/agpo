@@ -24,6 +24,9 @@ package {
 	import flash.filesystem.FileMode;
 	import flash.filesystem.FileStream;
 	import flash.net.SharedObject;
+	import flash.net.URLLoader;
+	import flash.net.URLLoaderDataFormat;
+	import flash.net.URLRequest;
 	
 	import cmds.C10000Up;
 	import cmds.C12000Down;
@@ -44,11 +47,16 @@ package {
 	import common.baseData.IntU8;
 	
 	import mycom.Alert;
+	
+	import parser.Script;
 
 	[SWF(width=1580, height=400)]
 	public class AGPO extends Sprite {
 
 		public function AGPO() {
+			//script
+			Script.init(this);
+			
 			//net
 			s=CustomSocket.getInstance();
 
@@ -79,6 +87,8 @@ package {
 
 		private var setting:HBox;
 
+		private var projectName:String;
+
 		public function click_AddData(e:MouseEvent):void {
 			var line:Line=new Line(body);
 		}
@@ -88,25 +98,25 @@ package {
 		}
 
 		public function click_Send(e:MouseEvent):void {
-			//登录
-			var c1:C10000Up = new C10000Up();
-				c1.SID = "mkt";
-				s.sendMessage(10000,c1);
-				
+//			//登录
+//			var c1:C10000Up = new C10000Up();
+//				c1.SID = "mkt";
+//				s.sendMessage(10000,c1);
+			loadScriptAndSend();
 			
-			//进入地图A
-			s.addCmdListener(12000,on12000);
-			var c2:C12000Up = new C12000Up();
-				c2.MapName = "MapA";
-			s.sendMessage(12000, c2);
-			
-			//移动
-			s.addCmdListener(12001,on12001);
-			var c3:C12001Up = new C12001Up();
-				c3.XX = 1;
-				c3.ZZ = 2;
-				c3.YY = 3;
-			s.sendMessage(12001, c3);
+//			//进入地图A
+//			s.addCmdListener(12000,on12000);
+//			var c2:C12000Up = new C12000Up();
+//				c2.MapName = "MapA";
+//			s.sendMessage(12000, c2);
+//			
+//			//移动
+//			s.addCmdListener(12001,on12001);
+//			var c3:C12001Up = new C12001Up();
+//				c3.XX = 1;
+//				c3.ZZ = 2;
+//				c3.YY = 3;
+//			s.sendMessage(12001, c3);
 		}
 		private function on12000(vo:C12000Down):void{
 			if(vo.Flag==1)trace("进入地图");
@@ -156,6 +166,7 @@ package {
 			CmdFile.SaveClientCmd(pathClient.text + "\\jsons\\" + cmd_name.text+"_"+upOrDown + ".json", json);
 			
 			Alert.show("保存完成");
+			showCmdsJson();
 		}
 
 		public function getLines():Array {
@@ -252,8 +263,8 @@ package {
 			cmd_desc=new InputText(head);
 			cmd_desc.height=20;
 
-			var btn_send:PushButton=new PushButton(head, 0, 0, "Send", click_Send);
 			var btn_connet:PushButton=new PushButton(head, 0, 0, "reConnet", click_Conn);
+			var btn_send:PushButton=new PushButton(head, 0, 0, "Send", click_Send);
 			var btn_save:PushButton=new PushButton(head, 0, 0, "Save", click_save);
 			
 			chooseProject();
@@ -290,6 +301,7 @@ package {
 		
 		private function showCmdsJson():void
 		{
+			cmdlist.removeAll();
 			var dir:File = new File(pathClient.text+"\\jsons\\");
 			if(!dir.exists) return;
 			var arr:Array = dir.getDirectoryListing();
@@ -302,13 +314,14 @@ package {
 		
 		private function setPaths(projectName:String):void
 		{
+			this.projectName = projectName;
 			var path_label1:Label=new Label(setting, 0, 0, "Client cmd's src path:");
 			pathClient=new InputText(setting, 0, 0, "", function():void {
 				flash.net.SharedObject.getLocal("cmd_path_"+projectName).data.cmd_path1=pathClient.text;
 			});
 			pathClient.width=300;
 			
-			var path_label2:Label=new Label(setting, 0, 0, "Server cmd's src path:");
+			var path_label2:Label=new Label(setting, 0, 0, "GoPath's src dir:");
 			pathServer=new InputText(setting, 0, 0, "", function():void {
 				flash.net.SharedObject.getLocal("cmd_path_"+projectName).data.cmd_path2=pathServer.text;
 			});
@@ -328,11 +341,36 @@ package {
 			}
 		}
 		
+		public function loadScriptAndSend():void {
+			var upOrDown:String = up_down1.selected? "Up":"Down";
+			var className:String = "C"+cmd_name.text+upOrDown;
+			
+			var loader:URLLoader = new URLLoader();
+			loader.dataFormat = URLLoaderDataFormat.TEXT;
+			loader.addEventListener(Event.COMPLETE,function(e:*):void{
+				var str:String = loader.data;
+				str = str.replace(" implements"," \/\/implements");
+				Script.LoadFromString(str);
+				var ascriptIns:Object=Script.New(className);
+				trace("=========");
+				trace(ascriptIns)
+				for (var i:int = 0; i < body.numChildren; i++) {
+					var line:Line = body.getChildAt(i) as Line;
+					var data:LineData = line.getData();
+					var val:Object = line.value;
+					ascriptIns[data.name] = val;
+				}
+				trace(ascriptIns);
+				s.sendMessage(parseInt(cmd_name.text),ascriptIns);
+				trace("=========");
+			});
+			loader.load(new URLRequest(pathClient.text+"\\cmds\\"+className+".as"));
+		}
 		public function start():void {
 			//s.start("s1.app888888.qqopenapp.com",8000);
 			if (s.connected)
 				s.close();
-			s.start("127.0.0.1", 8000);
+			s.start("127.0.0.1", 9999);
 			trace("重新连接");
 		}
 	}

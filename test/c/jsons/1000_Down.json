@@ -1,12 +1,12 @@
 {
 	"type": "Down",
+	"desc": "登陆",
 	"arr": [
 		{
-			"type": "String",
-			"name": "ok",
-			"desc": "成功与否"
+			"type": "8",
+			"desc": "登陆成功与否",
+			"name": "ok"
 		}
 	],
-	"name": "1000",
-	"desc": "登陆"
+	"name": "1000"
 }

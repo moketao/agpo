@@ -18,11 +18,6 @@ package com.moketao.socket.save {
 			super(parent, xpos, ypos);
 			dropDown=new ComboBox(this, 0, 0, "Type", TYPES);
 
-			var val_label:Label=new Label(this, 0, 0, "val");
-			val_label.height=20;
-			val=new InputText(this);
-			val.height=20;
-
 			var tname_label:Label=new Label(this, 0, 0, "tname");
 			tname_label.height=20;
 			tname=new InputText(this);
@@ -33,6 +28,11 @@ package com.moketao.socket.save {
 			desc=new InputText(this);
 			desc.height=20;
 
+			var val_label:Label=new Label(this, 0, 0, "val");
+			val_label.height=20;
+			val=new InputText(this);
+			val.height=20;
+			
 			var del:PushButton=new PushButton(this, 0, 0, "Delete", click_del);
 			
 			if(ob!=null){
@@ -46,6 +46,16 @@ package com.moketao.socket.save {
 		public var val:InputText;
 		public var desc:InputText;
 		public var tname:InputText;
+		private var _value:Object;
+
+		public function get value():Object
+		{
+			var i:Object = dropDown.selectedItem;
+			if(i=="String") return val.text;
+			if(i=="8" || i=="16" || i=="32" || i=="64" || i=="64" || i=="f32" || i=="f64" || i=="u8" || i=="u16" || i=="u32" || i=="u64") return parseFloat(val.text);
+			throw new Error("暂不支持");
+			return 0;
+		}
 
 		public function getData():LineData {
 			var d:LineData=new LineData();

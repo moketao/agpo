@@ -147,6 +147,8 @@ package com.moketao.socket {
 		}
 
 		public function traceBytes():void {
+			var pos:uint = this.position;
+			this.position = 0;
 			var out:String="[ ";
 			for (var i:int=0; i < this.length; i++) {
 				var byte:uint=this[i] as uint;
@@ -155,7 +157,7 @@ package com.moketao.socket {
 				out+=s;
 			}
 			out+="]";
-			this.position=0;
+			this.position=pos;
 			trace(out);
 		}
 	}

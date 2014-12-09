@@ -148,7 +148,7 @@ func init() {
 			} else {
 				fields=CmdFile.fixComment(fields);
 				unpacks=CmdFile.fixComment(unpacks);
-				out+="package handle\n\n";
+				out+="package cmds\n\n";
 				out+="import (\n";
 				out+='	. "base"\n';
 				out+='	"fmt"\n';

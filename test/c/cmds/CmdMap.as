@@ -2,16 +2,16 @@ package cmds {
 	import flash.utils.Dictionary;
 
 	public class CmdMap {
-		private static var _instance:CommandMap=null;
+		private static var _instance:CmdMap=null;
 		public var _CMDDic:Dictionary;
 		public function CmdMap() {
 			_CMDDic=new Dictionary();
 			configCMD();
 		}
 
-		public static function getInstance():CommandMap {
+		public static function getInstance():CmdMap {
 			if (_instance == null) {
-				_instance=new CommandMap();
+				_instance=new CmdMap();
 			}
 			return _instance;
 		}
@@ -19,7 +19,6 @@ package cmds {
 		private function configCMD():void {
 			//dicStart
 			_CMDDic[1000]=C1000Down;
-			_CMDDic[1001]=C1001Down;
 			//dicEnd
 		}
 

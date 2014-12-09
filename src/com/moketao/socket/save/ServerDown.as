@@ -5,22 +5,22 @@ package com.moketao.socket.save {
 
 	public class ServerDown {
 		public static function save(main:AGPO):void {
-			//commandmap.go
+			//CmdMap.go
 			
 			var mapStr:String = <![CDATA[package cmds {
 	import flash.utils.Dictionary;
 
 	public class CmdMap {
-		private static var _instance:CommandMap=null;
+		private static var _instance:CmdMap=null;
 		public var _CMDDic:Dictionary;
 		public function CmdMap() {
 			_CMDDic=new Dictionary();
 			configCMD();
 		}
 
-		public static function getInstance():CommandMap {
+		public static function getInstance():CmdMap {
 			if (_instance == null) {
-				_instance=new CommandMap();
+				_instance=new CmdMap();
 			}
 			return _instance;
 		}

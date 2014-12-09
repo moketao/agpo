@@ -108,7 +108,7 @@ package com.moketao.socket {
 			function loop():void {
 
 				//★是否包头可读取 ↓
-				if (Len == 0) {
+				if (Len == 0) {;
 					if (bytesAvailable >= 2) {
 						Len=readUnsignedShort(); //包裹总长度 Len
 					} else {
@@ -138,6 +138,10 @@ package com.moketao.socket {
 		 * 处理从服务端收到的数据
 		 */
 		private function getMsg(b:CustomByteArray):void {
+			b.traceBytes();
+			b.position = 2;
+			trace(b.readUTFBytes(b.bytesAvailable));
+			return;/////////////////恢复回来
 			var num:int = b.readUnsignedShort();
 			var vo:*;
 			if(b.bytesAvailable>0){
@@ -155,7 +159,7 @@ package com.moketao.socket {
 				}
 			}
 		}
-
+		
 		public function cancelHandler():void {
 			removeEventListener(ProgressEvent.SOCKET_DATA, socketDataHandler);
 		}
@@ -261,12 +265,16 @@ package com.moketao.socket {
 			}
 			var dataBytes:CustomByteArray=new CustomByteArray();
 			if (object != null) {
-				var Ipack:ISocketUp=object as ISocketUp;
-				if (!Ipack){
-					Alert.show("sendMessage 的第二个参数必须是 ISocketUp");
-					return;
+				if(object._super){
+					object.PackInTo(dataBytes);
+				}else{
+					var Ipack:ISocketUp=object as ISocketUp;
+					if (!Ipack){
+						Alert.show("sendMessage 的第二个参数必须是 ISocketUp");
+						return;
+					}
+					Ipack.PackInTo(dataBytes);
 				}
-				Ipack.PackInTo(dataBytes);
 				dataBytes.position=0;
 			}
 
@@ -276,9 +284,12 @@ package com.moketao.socket {
 				addTgwHead(sendBytes) //第一个包，加tgw包头，服务端将丢弃第一个包
 			}
 			sendBytes.writeShort(dataBytes.length + 2); //包总长=数据长度+协议16长度（一个16位无符号正整数）
+			sendBytes.traceBytes();
 			sendBytes.writeShort(cmd); //写入协议号
+			sendBytes.traceBytes();
 			sendBytes.writeBytes(dataBytes); //写入数据
 			this.writeBytes(sendBytes);
+			sendBytes.traceBytes();
 			this.flush();
 		}
 	}

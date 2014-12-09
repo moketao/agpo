@@ -30,8 +30,9 @@ package cmds {
 		}
 
 		public static function getCmdOB(cmd:int):* {
-			var a_class:Class = _instance._CMDDic[cmd];
-			return new a_class();
+			//var a_class:Class = _instance._CMDDic[cmd];/////////////////////////////恢复回来
+			trace(cmd);
+			//return new a_class();/////////////////////////////恢复回来
 		}
 
 		/**
