@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/funny/link"
 	//"time"
-	"ss/cmds"
+	. "ss/cmds"
 )
 
 // This is broadcast server demo work with the echo_client.
@@ -31,24 +31,16 @@ func main() {
 	server.AcceptLoop(func(session *link.Session) {
 		println("client", session.Conn().RemoteAddr().String(), "in")
 		channel.Join(session, nil)
-
 		session.ReadLoop(func(msg link.InBuffer) {
 			TraceBytes(msg.Get())
 			cmd := msg.ReadUint16()
 			fmt.Println("收到协议", cmd)
-			strLen := msg.ReadUint16()
-			str := msg.ReadString(int(strLen))
-			fmt.Println(str)
-			c := C1000Up{}
-			fmt.Println(c)
+			res := DIC[cmd].Func(cmd, &msg, session)
 
-			//outBuffer := new(link.OutBufferBE)
 			//out := "welcome，我是服务器..."
-			//outLen := len(out)
-			//outBuffer.WriteUint16(uint16(outLen))
-			//outBuffer.WriteString(out)
+
 			////channel.Broadcast(outBuffer.Get())
-			//session.SendPacket(outBuffer)
+			session.SendPacket(res)
 			//fmt.Println(outBuffer.Get())
 		})
 

@@ -65,8 +65,9 @@ package parse {
 							tk.line=line;
 							tk.index=words.length;
 							tk.linestr=lines[line];
-					  }catch(e){
-						  trace("词法分析"+e);
+					  }catch(e:Error){
+						  var t:Token = words[words.length-1] as Token;
+						  trace("词法分析","line",line,"字符:\"",t.word,"\"之后，包含一个无法解析的字符。",e);
 					  }
                     if(tk){
                     	words.push(tk);
