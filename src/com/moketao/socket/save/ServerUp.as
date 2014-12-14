@@ -8,14 +8,14 @@ package com.moketao.socket.save {
 			var handleStr:String = <![CDATA[package cmds
 
 import (
-	. "base"
 	_ "fmt"
+	"github.com/funny/link"
 	"reflect"
 )
 
 type ACMD struct {
-	Code uint16                              //协议号
-	Func func(uint16, *Pack, *Player) []byte //协议号对应函数
+	Code uint16                                                        //协议号
+	Func func(uint16, *link.InBuffer, *link.Session) *link.OutBufferBE //协议号对应函数
 }
 
 var DIC map[uint16]ACMD = map[uint16]ACMD{} //以字典形式存在的协议
@@ -41,10 +41,13 @@ func init() {
 	}
 }
 ]]>;
-			//handle.go
+			var fileDIR:String=main.pathServer.text + "\\cmds\\";
+			var fDIR:File=new File(fileDIR);
+			if(!fDIR.exists) fDIR.createDirectory();
+				
 			var filePath:String=main.pathServer.text + "\\cmds\\CmdMap.go";
 			var f:File=new File(filePath);
-			
+
 			if(!f.exists){
 				var fs:FileStream = new FileStream();
 				fs.open(f,FileMode.WRITE);
@@ -61,7 +64,7 @@ func init() {
 				fileName=main.cmd_name.text; //如果是数组内的 NodeClass 则不需要加 C前缀和 Up后缀
 				isNodeClass=true;
 			} else {
-				//如果是C10000Up格式的，需要注册到 handle.go
+				//如果是C10000Up格式的，需要注册到 CmdMap.go
 				var out:String=s.readUTFBytes(s.bytesAvailable);
 				s.close();
 				var reg:RegExp;
@@ -95,9 +98,9 @@ func init() {
 				var nodeClassName:String=getClassName(d.desc);
 				fields+="	" + d.name + " " + toTypeString(d.type, nodeClassName) + " //" + d.type + "，" + d.desc + "\n";
 				if (d.type != "Array") {
-					unpacks+="	s." + d.name + " = " + toReadFunc(d.type) + "//" + d.desc + "\n";
+					unpacks+="	s." + d.name+" = " + toReadFunc(d.type) + "//" + d.desc + "\n";
 				} else {
-					unpacks+="	count := int(p.ReadUInt16())//数组长度（" + d.desc + "）\n";
+					unpacks+="	count := int(p.ReadUint16())//数组长度（" + d.desc + "）\n";
 					unpacks+="	for i := 0; i < count; i++ {\n";
 					if (isClass(nodeClassName)) {
 						unpacks+="		node := new(" + nodeClassName + ")\n";
@@ -108,6 +111,9 @@ func init() {
 					unpacks+="	}\n";
 				}
 				if (d.type != "Array") {
+					if(d.type=="String"){
+						packs+="	p.WriteInt16(int(len(s." + d.name + ")))\n";
+					}
 					packs+="	p." + toWriteFunc(d.type) + "(s." + d.name + ")" + "//" + d.desc + "\n";
 				} else {
 					packs+="	count := len(s." + d.name + ")//数组长度（" + d.desc + "）\n";
@@ -115,7 +121,7 @@ func init() {
 					if (isClass(nodeClassName)) {
 						packs+="		s." + d.name + "[i].PackInTo(p)\n";
 					} else {
-						packs+="		p." + toWriteFunc(nodeClassName) + "(s." + d.name + "[i])\n";
+						packs+="		" + toWriteFunc(nodeClassName) + "(s." + d.name + "[i])\n";
 					}
 					packs+="	}\n";
 				}
@@ -126,22 +132,23 @@ func init() {
 				unpacks=CmdFile.fixComment(unpacks);
 				out+="package cmds\n\n";
 				out+="import (\n";
-				out+='	. "base"\n';
+				out+='	"github.com/funny/link"\n';
 				out+=")\n\n";
 				out+="type " + fileName + " struct {\n";
 				out+=fields;
 				out+="}\n\n";
-				out+="func (s *" + fileName + ") UnPackFrom(p *Pack) " + fileName + " {\n";
+				out+="func (s *" + fileName + ") UnPackFrom(p *link.InBufferBE) " + fileName + " {\n";
 				out+=unpacks;
 				out+="	return *s\n";
 				out+="}\n\n";
-				out+="func (s *" + fileName + ") PackInTo(p *Pack) {\n";
+				out+="func (s *" + fileName + ") PackInTo(p *link.OutBufferBE) {\n";
 				out+=packs;
 				out+="}\n\n";
-				out+="func (s *"+fileName+")ToBytes() []byte {\n";
-				out+="	pack := NewPackEmpty()\n";
-				out+="	s.PackInTo(pack)\n";
-				out+="	return pack.Data()\n";
+				out+="func (s *"+fileName+")ToBuffer(cmdID uint16) *link.OutBufferBE {\n";
+				out+="	p := new(link.OutBufferBE)\n";
+				out+="	p.WriteUint16(cmdID) //写入协议号\n";
+				out+="	s.PackInTo(p)\n";
+				out+="	return p\n";
 				out+="}\n";
 				filePath=main.pathServer.text + "\\cmds\\" + fileName + ".go";
 				CmdFile.SaveClientCmd(filePath, out);
@@ -150,26 +157,24 @@ func init() {
 				unpacks=CmdFile.fixComment(unpacks);
 				out+="package cmds\n\n";
 				out+="import (\n";
-				out+='	. "base"\n';
-				out+='	"fmt"\n';
+				out+='	"github.com/funny/link"\n';
 				out+=")\n\n";
 				out+="type C" + main.cmd_name.text + "Up struct {\n";
 				out+=fields;
 				out+="}\n\n";
-				out+="func f" + main.cmd_name.text + "Up(c uint16, p *Pack, u *Player) []byte {\n";
+				out+="func f" + main.cmd_name.text + "Up(c uint16, b *link.InBuffer, u *link.Session) *link.OutBufferBE {\n";
 				out+="	s := new(C" + main.cmd_name.text + "Up)\n";
+				out+="	p := *b\n";
 				out+=unpacks;
-				out+="	fmt.Println(s)//需删除，否则影响性能\n";
-				out+="	res := new (C" + main.cmd_name.text + "Down)\n";
+				out+="	res := new(C" + main.cmd_name.text + "Down)\n";
 				out+="	//业务逻辑：\n";
 				out+="	\n";
-				out+="	return res.ToBytes()\n";
+				out+="	return res.ToBuffer()\n";
 				out+="}\n\n";
 
 				filePath=main.pathServer.text + "\\cmds\\" + fileName + ".go";
 				CmdFile.SaveClientCmd(filePath, out);
 			}
-
 		}
 
 		private static function getClassName(desc:String):String {
@@ -258,35 +263,35 @@ func init() {
 					break;
 				}
 				case "64":  {
-					return "p.ReadInt64()";
+					return "p.ReadInt50()";
 					break;
 				}
 				case "f32":  {
-					return "p.ReadF32()";
+					return "p.ReadFloat32()";
 					break;
 				}
 				case "f64":  {
-					return "p.ReadF64()";
+					return "p.ReadFloat64()";
 					break;
 				}
 				case "String":  {
-					return "p.ReadString()";
+					return "p.ReadString(int(p.ReadUint16()))";
 					break;
 				}
 				case "u8":  {
-					return "p.ReadUInt8()";
+					return "p.ReadUint8()";
 					break;
 				}
 				case "u16":  {
-					return "p.ReadUInt16()";
+					return "p.ReadUint16()";
 					break;
 				}
 				case "u32":  {
-					return "p.ReadUInt32()";
+					return "p.ReadUint32()";
 					break;
 				}
 				case "u64":  {
-					return "p.ReadUInt64()";
+					return "p.ReadUint64()";
 					break;
 				}
 			}
@@ -308,15 +313,15 @@ func init() {
 					break;
 				}
 				case "64":  {
-					return "WriteInt64";
+					return "WriteInt50";
 					break;
 				}
 				case "f32":  {
-					return "WriteF32";
+					return "WriteFloat32";
 					break;
 				}
 				case "f64":  {
-					return "WriteF64";
+					return "WriteFloat64";
 					break;
 				}
 				case "String":  {
@@ -324,19 +329,19 @@ func init() {
 					break;
 				}
 				case "u8":  {
-					return "WriteUInt8";
+					return "WriteUint8";
 					break;
 				}
 				case "u16":  {
-					return "WriteUInt16";
+					return "WriteUint16";
 					break;
 				}
 				case "u32":  {
-					return "WriteUInt32";
+					return "WriteUint32";
 					break;
 				}
 				case "u64":  {
-					return "WriteUInt64";
+					return "WriteUint64";
 					break;
 				}
 			}

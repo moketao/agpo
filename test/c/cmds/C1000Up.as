@@ -4,11 +4,13 @@ import com.moketao.socket.CustomByteArray;
 	/** 登陆 **/
 	public class C1000Up implements ISocketUp
 	{
-		public var name:String; //String，用户名
+		public var name:String; //String，名字
+		public var ff:Number;   //64，ff
 		/** 登陆 **/
 		public function C1000Up(){}
 		public function PackInTo(b:CustomByteArray):void{
-			b.writeUTF(name); //String（用户名）
+			b.writeUTF(name); //String（名字）
+			b.WriteInt64(ff); //64（ff）
 		}
 	}
 }

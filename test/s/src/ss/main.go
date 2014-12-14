@@ -32,16 +32,16 @@ func main() {
 		println("client", session.Conn().RemoteAddr().String(), "in")
 		channel.Join(session, nil)
 		session.ReadLoop(func(msg link.InBuffer) {
-			TraceBytes(msg.Get())
+
 			cmd := msg.ReadUint16()
 			fmt.Println("收到协议", cmd)
+			TraceBytes(msg.Get())
 			res := DIC[cmd].Func(cmd, &msg, session)
-
-			//out := "welcome，我是服务器..."
-
 			////channel.Broadcast(outBuffer.Get())
 			session.SendPacket(res)
-			//fmt.Println(outBuffer.Get())
+
+			fmt.Print("发送")
+			TraceBytes(res.Get())
 		})
 
 		println("client", session.Conn().RemoteAddr().String(), "close")
@@ -55,5 +55,5 @@ func TraceBytes(b []byte) {
 	for i := 0; i < len(b); i++ {
 		fmt.Printf("%08b ", b[i])
 	}
-	fmt.Print("]")
+	fmt.Print("]\n")
 }

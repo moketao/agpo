@@ -4,8 +4,15 @@
 	"arr": [
 		{
 			"type": "String",
-			"desc": "用户名",
+			"val": "a",
+			"desc": "名字",
 			"name": "name"
+		},
+		{
+			"type": "64",
+			"val": "8999999999999999",
+			"desc": "ff",
+			"name": "ff"
 		}
 	],
 	"name": "1000"

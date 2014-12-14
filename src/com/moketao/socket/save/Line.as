@@ -39,6 +39,7 @@ package com.moketao.socket.save {
 				dropDown.selectedItem = ob.type;
 				tname.text = ob.name;
 				desc.text = ob.desc;
+				if(ob.val)val.text = ob.val;
 			}
 		}
 
@@ -62,6 +63,7 @@ package com.moketao.socket.save {
 			d.type=getType();
 			d.name=tname.text;
 			d.desc=desc.text;
+			d.val=val.text;
 			return d;
 		}
 

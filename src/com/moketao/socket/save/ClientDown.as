@@ -22,7 +22,7 @@ package com.moketao.socket.save {
 					packs+="			" + toWriteFunc(d.type) + "(" + d.name + ");//" + d.type + "（" + d.desc + "）\n";
 				} else {
 					var len:String=d.name + ".length";
-					packs+="			b.WriteUInt16(" + len + ");//写入数组长度，（" + d.desc + "）\n";
+					packs+="			b.WriteUint16(" + len + ");//写入数组长度，（" + d.desc + "）\n";
 					packs+="			for(var i:int=0;i<" + len + ";i++){ \n";
 					if (isClass(nodeClassName)) {
 						packs+="				(" + d.name + "[i] as " + nodeClassName + ").PackInTo(b);\n";
@@ -34,7 +34,7 @@ package com.moketao.socket.save {
 				if (d.type != "Array") {
 					unpacks+="			" + d.name + " = " + toReadFunc(d.type) + ";//" + d.type + "（" + d.desc + "）\n";
 				} else {
-					unpacks+="			var len:int = b.ReadUInt16();//读取数组长度，（" + d.desc + "）\n";
+					unpacks+="			var len:int = b.ReadUint16();//读取数组长度，（" + d.desc + "）\n";
 					unpacks+="			for (var i:int = 0; i < len; i++){\n";
 					if (isClass(nodeClassName)) {
 						unpacks+="				var node:" + nodeClassName + " = new " + nodeClassName + "();\n";
@@ -68,7 +68,7 @@ package com.moketao.socket.save {
 				out+="			return this;\n";
 				out+="		}\n";
 				out+="	}\n";
-				out+="}\n";
+				out+="}";
 				CmdFile.SaveClientCmd(main.pathClient.text + "\\cmds\\" + fileName + ".as", out);
 			} else {
 				fields=CmdFile.fixComment(fields);
@@ -87,7 +87,7 @@ package com.moketao.socket.save {
 				out+="			return this;\n";
 				out+="		}\n";
 				out+="	}\n"
-				out+="}\n"
+				out+="}"
 
 				CmdFile.SaveClientCmd(main.pathClient.text + "\\cmds\\" + fileName + ".as", out);
 			}
@@ -178,7 +178,7 @@ package com.moketao.socket.save {
 					break;
 				}
 				case "64":  {
-					return "b.WriteInt64";
+					return "b.WriteInt50";
 					break;
 				}
 				case "f32":  {
@@ -194,19 +194,19 @@ package com.moketao.socket.save {
 					break;
 				}
 				case "u8":  {
-					return "b.WriteUInt8";
+					return "b.WriteUint8";
 					break;
 				}
 				case "u16":  {
-					return "b.WriteUInt16";
+					return "b.WriteUint16";
 					break;
 				}
 				case "u32":  {
-					return "b.WriteUInt32";
+					return "b.WriteUint32";
 					break;
 				}
 				case "u64":  {
-					return "b.WriteUInt64";
+					return "b.WriteUint64";
 					break;
 				}
 			}
@@ -244,19 +244,19 @@ package com.moketao.socket.save {
 					break;
 				}
 				case "u8":  {
-					return "b.ReadUInt8()";
+					return "b.ReadUint8()";
 					break;
 				}
 				case "u16":  {
-					return "b.ReadUInt16()";
+					return "b.ReadUint16()";
 					break;
 				}
 				case "u32":  {
-					return "b.ReadUInt32()";
+					return "b.ReadUint32()";
 					break;
 				}
 				case "u64":  {
-					return "b.ReadUInt64()";
+					return "b.ReadUint64()";
 					break;
 				}
 			}

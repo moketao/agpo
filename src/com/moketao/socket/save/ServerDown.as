@@ -87,9 +87,12 @@ package com.moketao.socket.save {
 				var nodeClassName:String=getClassName(d.desc);
 				fields+="	" + d.name + " " + toTypeString(d.type, nodeClassName) + " //" + d.type + "，" + d.desc + "\n";
 				if (d.type != "Array") {
-					unpacks+="	s." + d.name + " = " + toReadFunc(d.type) + "//" + d.desc + "\n";
+					if(d.type=="String"){
+						unpacks+="	p.ReadInt16(int16(len(s." + d.name + ")))\n";
+					}
+					unpacks+="	p." + toReadFunc(d.type) + "(s." + d.name + ")" + "//" + d.desc + "\n";
 				} else {
-					unpacks+="	count := int(p.ReadUInt16())//数组长度（" + d.desc + "）\n";
+					unpacks+="	count := int(p.ReadUint16())//数组长度（" + d.desc + "）\n";
 					unpacks+="	for i := 0; i < count; i++ {\n";
 					if (isClass(nodeClassName)) {
 						unpacks+="		node := new(" + nodeClassName + ")\n";
@@ -100,6 +103,9 @@ package com.moketao.socket.save {
 					unpacks+="	}\n";
 				}
 				if (d.type != "Array") {
+					if(d.type=="String"){
+						packs+="	p.WriteInt16(int16(len(s." + d.name + ")))\n";
+					}
 					packs+="	p." + toWriteFunc(d.type) + "(s." + d.name + ")" + "//" + d.desc + "\n";
 				} else {
 					packs+="	count := len(s." + d.name + ")//数组长度（" + d.desc + "）\n";
@@ -118,22 +124,22 @@ package com.moketao.socket.save {
 				unpacks=CmdFile.fixComment(unpacks);
 				out+="package cmds\n\n";
 				out+="import (\n";
-				out+='	. "base"\n';
+				out+='	"github.com/funny/link"\n';
 				out+=")\n\n";
 				out+="type " + fileName + " struct {\n";
 				out+=fields;
 				out+="}\n\n";
-				out+="func (s *" + fileName + ") UnPackFrom(p *Pack) " + fileName + " {\n";
+				out+="func (s *" + fileName + ") UnPackFrom(p *link.InBufferBE ) " + fileName + " {\n";
 				out+=unpacks;
 				out+="	return *s\n";
 				out+="}\n\n";
-				out+="func (s *" + fileName + ") PackInTo(p *Pack) {\n";
+				out+="func (s *" + fileName + ") PackInTo(p *link.OutBufferBE ) {\n";
 				out+=packs;
 				out+="}\n\n";
-				out+="func (s *"+fileName+")ToBytes() []byte {\n";
-				out+="	pack := NewPackEmpty()\n";
-				out+="	s.PackInTo(pack)\n";
-				out+="	return pack.Data()\n";
+				out+="func (s *"+fileName+")ToBuffer() *link.OutBufferBE {\n";
+				out+="	p := new(link.OutBufferBE)\n";
+				out+="	s.PackInTo(p)\n";
+				out+="	return p\n";
 				out+="}\n";
 				filePath=main.pathServer.text + "\\cmds\\" + fileName + ".go";
 				CmdFile.SaveClientCmd(filePath, out);
@@ -142,19 +148,19 @@ package com.moketao.socket.save {
 				unpacks=CmdFile.fixComment(unpacks);
 				out+="package cmds\n\n";
 				out+="import (\n";
-				out+='	. "base"\n';
+				out+='	"github.com/funny/link"\n';
 				out+=")\n\n";
 				out+="type C" + main.cmd_name.text + "Down struct {\n";
 				out+=fields;
 				out+="}\n\n";
-				out+="func (s *C"+main.cmd_name.text+"Down)PackInTo(p *Pack) {\n";
-				out+="	p.WriteUInt16("+main.cmd_name.text+") //写入协议号\n";
+				out+="func (s *C"+main.cmd_name.text+"Down)PackInTo(p *link.OutBufferBE ) {\n";
 				out+=packs;
 				out+="}\n";
-				out+="func (s *C"+main.cmd_name.text+"Down)ToBytes() []byte {\n";
-				out+="	pack := NewPackEmpty()\n";
-				out+="	s.PackInTo(pack)\n";
-				out+="	return pack.Data()\n";
+				out+="func (s *C"+main.cmd_name.text+"Down)ToBuffer() *link.OutBufferBE {\n";
+				out+="	p := new(link.OutBufferBE)\n";
+				out+="	p.WriteUint16("+main.cmd_name.text+") //写入协议号\n";
+				out+="	s.PackInTo(p)\n";
+				out+="	return p\n";
 				out+="}\n";
 
 				filePath=main.pathServer.text + "\\cmds\\" + fileName + ".go";
@@ -249,35 +255,35 @@ package com.moketao.socket.save {
 					break;
 				}
 				case "64":  {
-					return "p.ReadInt64()";
+					return "p.ReadInt50()";
 					break;
 				}
 				case "f32":  {
-					return "p.ReadF32()";
+					return "p.ReadFloat32()";
 					break;
 				}
 				case "f64":  {
-					return "p.ReadF64()";
+					return "p.ReadFloat64()";
 					break;
 				}
 				case "String":  {
-					return "p.ReadString()";
+					return "p.ReadString(int(p.ReadUint16()))";
 					break;
 				}
 				case "u8":  {
-					return "p.ReadUInt8()";
+					return "p.ReadUint8()";
 					break;
 				}
 				case "u16":  {
-					return "p.ReadUInt16()";
+					return "p.ReadUint16()";
 					break;
 				}
 				case "u32":  {
-					return "p.ReadUInt32()";
+					return "p.ReadUint32()";
 					break;
 				}
 				case "u64":  {
-					return "p.ReadUInt64()";
+					return "p.ReadUint64()";
 					break;
 				}
 			}
@@ -299,15 +305,15 @@ package com.moketao.socket.save {
 					break;
 				}
 				case "64":  {
-					return "WriteInt64";
+					return "WriteInt50";//不是真的64位，只写入50位左右，最高位用来表达符号，as3的Number支持不了那么多位的正整数，超过8999999999999999精确度就不够了
 					break;
 				}
 				case "f32":  {
-					return "WriteF32";
+					return "WriteFloat32";
 					break;
 				}
 				case "f64":  {
-					return "WriteF64";
+					return "WriteFloat64";
 					break;
 				}
 				case "String":  {
@@ -315,19 +321,19 @@ package com.moketao.socket.save {
 					break;
 				}
 				case "u8":  {
-					return "WriteUInt8";
+					return "WriteUint8";
 					break;
 				}
 				case "u16":  {
-					return "WriteUInt16";
+					return "WriteUint16";
 					break;
 				}
 				case "u32":  {
-					return "WriteUInt32";
+					return "WriteUint32";
 					break;
 				}
 				case "u64":  {
-					return "WriteUInt64";
+					return "WriteUint64";
 					break;
 				}
 			}

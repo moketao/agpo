@@ -16,7 +16,7 @@ package cmds{
 			b.writeFloat(ZZ);      //f32（纵坐标）
 			b.writeFloat(YY);      //f32（高度）
 			b.writeFloat(Dir);     //f32（方向）
-			b.WriteUInt16(Action); //u16（动作（静止、走路、奔跑、跑跳、原地跳、左横移、右横移、退后、退跑、攻击1、攻击2等等））
+			b.WriteUint16(Action); //u16（动作（静止、走路、奔跑、跑跳、原地跳、左横移、右横移、退后、退跑、攻击1、攻击2等等））
 		}
 	}
 }

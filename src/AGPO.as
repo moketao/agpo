@@ -160,10 +160,16 @@ package {
 			for (var p:int=0; p < body.numChildren; p++) {
 				var line:Line=body.getChildAt(p) as Line;
 				var dd:LineData=line.getData();
-				arr.push({name:dd.name,desc:dd.desc,type:dd.type});
+				var val:String = dd.val?dd.val:"";
+				arr.push({name:dd.name,desc:dd.desc,type:dd.type,val:val});
 			}
 			var json:String = JSON.stringify(ob,null,"\t");
-			CmdFile.SaveClientCmd(pathClient.text + "\\jsons\\" + cmd_name.text+"_"+upOrDown + ".json", json);
+			if (cmd_name.text.search(new RegExp(/\d/)) == -1) {
+				upOrDown = "";
+			}else{
+				upOrDown = "_"+upOrDown;
+			}
+			CmdFile.SaveClientCmd(pathClient.text + "\\jsons\\" + cmd_name.text+upOrDown + ".json", json);
 			
 			Alert.show("保存完成");
 			showCmdsJson();
@@ -321,7 +327,7 @@ package {
 			});
 			pathClient.width=300;
 			
-			var path_label2:Label=new Label(setting, 0, 0, "GoPath's src dir:");
+			var path_label2:Label=new Label(setting, 0, 0, "main.go's dir:");
 			pathServer=new InputText(setting, 0, 0, "", function():void {
 				flash.net.SharedObject.getLocal("cmd_path_"+projectName).data.cmd_path2=pathServer.text;
 			});

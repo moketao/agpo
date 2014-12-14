@@ -1,14 +1,16 @@
 package cmds{
 import com.moketao.socket.ISocketDown;
 import com.moketao.socket.CustomByteArray;
-	/** 登陆 **/
+	/** 登陆返回 **/
 	public class C1000Down implements ISocketDown
 	{
-		public var ok:int; //8，登陆成功与否
-		/** 登陆 **/
+		public var name:String; //String，原样返回名字
+		public var ff:Number;   //64，ff
+		/** 登陆返回 **/
 		public function C1000Down(){}
 		public function UnPackFrom(b:CustomByteArray):*{
-			ok = b.ReadInt8();//8（登陆成功与否）
+			name = b.readUTF();//String（原样返回名字）
+			ff = b.ReadInt64();//64（ff）
 			return this;
 		}
 	}

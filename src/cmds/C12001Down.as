@@ -17,7 +17,7 @@ package cmds{
 			ZZ = b.readFloat();//f32（纵坐标）
 			YY = b.readFloat();//f32（高度）
 			Dir = b.readFloat();//f32（方向）
-			Action = b.ReadUInt16();//u16（动作（静止、走路、奔跑、跑跳、原地跳、左横移、右横移、退后、退跑、攻击1、攻击2等等））
+			Action = b.ReadUint16();//u16（动作（静止、走路、奔跑、跑跳、原地跳、左横移、右横移、退后、退跑、攻击1、攻击2等等））
 			Flag = b.ReadInt8();//8（0不可移动，1成功移动）
 			return this;
 		}

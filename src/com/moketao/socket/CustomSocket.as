@@ -108,7 +108,7 @@ package com.moketao.socket {
 			function loop():void {
 
 				//★是否包头可读取 ↓
-				if (Len == 0) {;
+				if (Len == 0) {
 					if (bytesAvailable >= 2) {
 						Len=readUnsignedShort(); //包裹总长度 Len
 					} else {
@@ -140,7 +140,9 @@ package com.moketao.socket {
 		private function getMsg(b:CustomByteArray):void {
 			b.traceBytes();
 			b.position = 2;
-			trace(b.readUTFBytes(b.bytesAvailable));
+			trace(b.readUTF());
+			trace(b.ReadInt64());
+			trace("");
 			return;/////////////////恢复回来
 			var num:int = b.readUnsignedShort();
 			var vo:*;
@@ -284,12 +286,12 @@ package com.moketao.socket {
 				addTgwHead(sendBytes) //第一个包，加tgw包头，服务端将丢弃第一个包
 			}
 			sendBytes.writeShort(dataBytes.length + 2); //包总长=数据长度+协议16长度（一个16位无符号正整数）
-			sendBytes.traceBytes();
+			sendBytes.traceBytes("包长");
 			sendBytes.writeShort(cmd); //写入协议号
-			sendBytes.traceBytes();
+			sendBytes.traceBytes("包长+协议号");
 			sendBytes.writeBytes(dataBytes); //写入数据
 			this.writeBytes(sendBytes);
-			sendBytes.traceBytes();
+			dataBytes.traceBytes("内容");
 			this.flush();
 		}
 	}

@@ -76,13 +76,13 @@ func (p *Pack) ReadInt64() int64 {
 }
 
 /*读取 双精度 浮点数 32位*/
-func (p *Pack) ReadF32() float32 {
+func (p *Pack) ReadFloat32() float32 {
 	result := uint32(p.ReadUInt32())
 	return math.Float32frombits(result)
 }
 
 /*读取 双精度 浮点数 64位*/
-func (p *Pack) ReadF64() float64 {
+func (p *Pack) ReadFloat64() float64 {
 	result := uint64(p.ReadUInt64())
 	return math.Float64frombits(result)
 }
@@ -178,13 +178,13 @@ func (p *Pack) WriteInt64(v int64) {
 }
 
 /*写入单精度浮点数*/
-func (p *Pack) WriteF32(f float32) {
+func (p *Pack) WriteFloat32(f float32) {
 	by := math.Float32bits(f)
 	p.WriteUInt32(uint32(by))
 }
 
 /*写入双精度浮点数*/
-func (p *Pack) WriteF64(f float64) {
+func (p *Pack) WriteFloat64(f float64) {
 	by := math.Float64bits(f)
 	p.WriteUInt64(uint64(by))
 }
