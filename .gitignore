@@ -56,3 +56,6 @@ $RECYCLE.BIN/
 *.msi
 *.msm
 *.msp
+/test/s/pkg/windows_amd64/github.com/funny/*.a
+/test/s/pkg/windows_amd64/ss/*.a
+/test/s/src/ss/*.exe
