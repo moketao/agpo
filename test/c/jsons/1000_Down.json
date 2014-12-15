@@ -4,16 +4,70 @@
 	"name": "1000",
 	"arr": [
 		{
-			"type": "String",
+			"type": "8",
 			"val": "",
-			"desc": "原样返回名字",
-			"name": "name"
+			"desc": "1",
+			"name": "a1"
+		},
+		{
+			"type": "16",
+			"val": "",
+			"desc": "2",
+			"name": "a2"
+		},
+		{
+			"type": "32",
+			"val": "",
+			"desc": "3",
+			"name": "a3"
 		},
 		{
 			"type": "64",
 			"val": "",
-			"desc": "ff",
-			"name": "ff"
+			"desc": "4",
+			"name": "a4"
+		},
+		{
+			"type": "String",
+			"val": "",
+			"desc": "5",
+			"name": "a5"
+		},
+		{
+			"type": "f32",
+			"val": "",
+			"desc": "6",
+			"name": "a6"
+		},
+		{
+			"type": "f64",
+			"val": "",
+			"desc": "7",
+			"name": "a7"
+		},
+		{
+			"type": "u8",
+			"val": "",
+			"desc": "8",
+			"name": "a8"
+		},
+		{
+			"type": "u16",
+			"val": "",
+			"desc": "9",
+			"name": "a9"
+		},
+		{
+			"type": "u32",
+			"val": "",
+			"desc": "0",
+			"name": "a10"
+		},
+		{
+			"type": "u64",
+			"val": "",
+			"desc": "11",
+			"name": "a11"
 		}
 	]
 }

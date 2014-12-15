@@ -1,5 +1,9 @@
 package cmds {
 	import flash.utils.Dictionary;
+	import cmds.bak.C10000Down;
+	import cmds.bak.C10001Down;
+	import cmds.bak.C12000Down;
+	import cmds.bak.C12001Down;
 
 	public class CommandMap {
 		private static var _instance:CommandMap=null;

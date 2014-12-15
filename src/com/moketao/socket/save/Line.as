@@ -16,7 +16,7 @@ package com.moketao.socket.save {
 
 		public function Line(parent:DisplayObjectContainer=null, xpos:Number=0, ypos:Number=0,ob:Object=null):void {
 			super(parent, xpos, ypos);
-			dropDown=new ComboBox(this, 0, 0, "Type", TYPES);
+			dropDown=new ComboBox(this, 0, 0, "Type", TYPES); dropDown.numVisibleItems = TYPES.length;
 
 			var tname_label:Label=new Label(this, 0, 0, "tname");
 			tname_label.height=20;

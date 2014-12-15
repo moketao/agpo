@@ -87,9 +87,6 @@ package com.moketao.socket.save {
 				var nodeClassName:String=getClassName(d.desc);
 				fields+="	" + d.name + " " + toTypeString(d.type, nodeClassName) + " //" + d.type + "，" + d.desc + "\n";
 				if (d.type != "Array") {
-					if(d.type=="String"){
-						unpacks+="	p.ReadInt16(int16(len(s." + d.name + ")))\n";
-					}
 					unpacks+="	p." + toReadFunc(d.type) + "(s." + d.name + ")" + "//" + d.desc + "\n";
 				} else {
 					unpacks+="	count := int(p.ReadUint16())//数组长度（" + d.desc + "）\n";
@@ -104,7 +101,7 @@ package com.moketao.socket.save {
 				}
 				if (d.type != "Array") {
 					if(d.type=="String"){
-						packs+="	p.WriteInt16(int16(len(s." + d.name + ")))\n";
+						packs+="	p.WriteUint16(uint16(len(s." + d.name + ")))\n";
 					}
 					packs+="	p." + toWriteFunc(d.type) + "(s." + d.name + ")" + "//" + d.desc + "\n";
 				} else {

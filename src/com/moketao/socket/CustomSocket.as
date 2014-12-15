@@ -7,11 +7,9 @@ package com.moketao.socket {
 	import flash.events.SecurityErrorEvent;
 	import flash.external.ExternalInterface;
 	import flash.net.Socket;
-	import flash.utils.ByteArray;
 	
 	import cmds.CommandMap;
-	
-	import common.baseData.Pack;
+	import cmds.C1000Down;
 	
 	import mycom.Alert;
 
@@ -139,10 +137,10 @@ package com.moketao.socket {
 		 */
 		private function getMsg(b:CustomByteArray):void {
 			b.traceBytes();
-			b.position = 2;
-			trace(b.readUTF());
-			trace(b.ReadInt64());
-			trace("");
+			b.position=2;
+			var c:C1000Down = new C1000Down();
+			c.UnPackFrom(b);
+			trace(c);
 			return;/////////////////恢复回来
 			var num:int = b.readUnsignedShort();
 			var vo:*;

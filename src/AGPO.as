@@ -28,11 +28,11 @@ package {
 	import flash.net.URLLoaderDataFormat;
 	import flash.net.URLRequest;
 	
-	import cmds.C10000Up;
-	import cmds.C12000Down;
-	import cmds.C12000Up;
-	import cmds.C12001Down;
-	import cmds.C12001Up;
+	import cmds.bak.C10000Up;
+	import cmds.bak.C12000Down;
+	import cmds.bak.C12000Up;
+	import cmds.bak.C12001Down;
+	import cmds.bak.C12001Up;
 	import cmds.CommandMap;
 	
 	import common.baseData.F32;
@@ -313,6 +313,7 @@ package {
 			var arr:Array = dir.getDirectoryListing();
 			for (var i:int = 0; i < arr.length; i++) {
 				var f:File = arr[i] as File;
+				if(f.extension!="json")continue;
 				var ob:Object = {label:f.name.replace(".json",""),data:f};
 				cmdlist.addItem(ob);
 			}
