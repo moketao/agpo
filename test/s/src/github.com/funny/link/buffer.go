@@ -188,6 +188,7 @@ func (m *InBufferBE) ReadInt50() int64 {
 	} else {
 		fu = 1
 	}
+	m.i += 8
 	return int64(u) * fu
 }
 
@@ -257,6 +258,7 @@ func (m *InBufferLE) ReadInt50() int64 {
 	} else {
 		fu = 1
 	}
+	m.i += 8
 	return int64(u) * fu
 }
 
