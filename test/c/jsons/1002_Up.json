@@ -1,0 +1,13 @@
+{
+	"type": "Up",
+	"desc": "数组测试",
+	"name": "1002",
+	"arr": [
+		{
+			"type": "Array",
+			"val": "",
+			"desc": "[Sub]",
+			"name": "arr"
+		}
+	]
+}

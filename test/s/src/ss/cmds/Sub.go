@@ -5,16 +5,19 @@ import (
 )
 
 type Sub struct {
-	f1 int8  //8，adsfsadf
+	s1 int8   //8，s1
+	s2 int16  //16，s2
 }
 
 func (s *Sub) UnPackFrom(p *link.InBufferBE) Sub {
-	s.f1 = p.ReadInt8() //adsfsadf
+	s.s1 = p.ReadInt8()  //s1
+	s.s2 = p.ReadInt16() //s2
 	return *s
 }
 
 func (s *Sub) PackInTo(p *link.OutBufferBE) {
-	p.WriteInt8(s.f1) //adsfsadf
+	p.WriteInt8(s.s1)  //s1
+	p.WriteInt16(s.s2) //s2
 }
 
 func (s *Sub)ToBuffer(cmdID uint16) *link.OutBufferBE {

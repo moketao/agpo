@@ -5,16 +5,19 @@ import com.moketao.socket.CustomByteArray;
 	/** sdafadf **/
 	public class Sub implements ISocketUp,ISocketDown
 	{
-		public var f1:int; //8，adsfsadf
+		public var s1:int; //8，s1
+		public var s2:int; //16，s2
 
 
 		/** sdafadf **/
 		public function Sub(){}
 		public function PackInTo(b:CustomByteArray):void{
-			b.WriteInt8(f1); //8（adsfsadf）
+			b.WriteInt8(s1);  //8（s1）
+			b.WriteInt16(s2); //16（s2）
 		}
 		public function UnPackFrom(b:CustomByteArray):*{
-			f1 = b.ReadInt8(); //8（adsfsadf）
+			s1 = b.ReadInt8();  //8（s1）
+			s2 = b.ReadInt16(); //16（s2）
 			return this;
 		}
 	}

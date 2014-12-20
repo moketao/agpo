@@ -9,14 +9,22 @@ package com.moketao.socket.save {
 	import com.bit101.components.PushButton;
 	
 	import flash.display.DisplayObjectContainer;
+	import flash.events.Event;
 	import flash.events.MouseEvent;
+	import flash.utils.getDefinitionByName;
+	import flash.utils.setTimeout;
+	
+	import mycom.Alert;
 
 	public class Line extends HBox {
 		public static var TYPES:Array=["8", "16", "32", "64", "String", "f32", "f64", "u8", "u16", "u32", "u64", "Array"];
 
 		public function Line(parent:DisplayObjectContainer=null, xpos:Number=0, ypos:Number=0,ob:Object=null):void {
 			super(parent, xpos, ypos);
-			dropDown=new ComboBox(this, 0, 0, "Type", TYPES); dropDown.numVisibleItems = TYPES.length;
+			dropDown=new ComboBox(this, 0, 0, "Type", TYPES); dropDown.numVisibleItems = TYPES.length; 
+			setTimeout(function():void{
+				dropDown.addEventListener(Event.SELECT,onSelect);
+			},2);
 
 			var tname_label:Label=new Label(this, 0, 0, "tname");
 			tname_label.height=20;
@@ -42,7 +50,14 @@ package com.moketao.socket.save {
 				if(ob.val)val.text = ob.val;
 			}
 		}
-
+		
+		protected function onSelect(e:Event):void
+		{
+			if(dropDown.selectedItem=="Array"){
+				Alert.show("Array类型，需要在 desc字段里加入子类的类名，格式如下：\n[SubClassName]\n[u8]\n[String]");
+			}
+		}
+		
 		public var dropDown:ComboBox;
 		public var val:InputText;
 		public var desc:InputText;
@@ -51,14 +66,58 @@ package com.moketao.socket.save {
 
 		public function get value():Object
 		{
-			var i:Object = dropDown.selectedItem;
-			if(i=="String") return val.text;
-			if(i=="8" || i=="16" || i=="32" || i=="64" || i=="64" || i=="f32" || i=="f64" || i=="u8" || i=="u16" || i=="u32" || i=="u64") return parseFloat(val.text);
+			var i:String = dropDown.selectedItem as String;
+			function v(atype:String,valStr:String):*{
+				if(atype=="String") return valStr;
+				if(atype=="8" || atype=="16" || atype=="32" || atype=="64" || atype=="64" || atype=="f32" || atype=="f64" || atype=="u8" || atype=="u16" || atype=="u32" || atype=="u64") return parseFloat(valStr);
+				return atype;
+			}
+			if(i=="Array"){
+				var arr:Array = val.text.split(",");
+				var out:Array = [];
+				var p:RegExp = /\[(.*)\]/;
+				var subType:String = "String";
+				var match:Array = String(desc.text).match(p);
+				if(match && match.length>0){
+					subType = match[1];
+				}
+				if(TYPES.indexOf(subType)<0){
+					var obArr:Array = JSON.parse(val.text) as Array;
+					for (var k:int = 0; k < obArr.length; k++){
+						var aob:Object = obArr[k];
+						var aclass:Class = flash.utils.getDefinitionByName("cmds."+subType) as Class;
+						var ob:* = new aclass();
+						trace(11111111111111);
+						for(var q:String in ob){
+							//ob[i] = aob[i];
+							trace(q);
+						}
+						trace(2222222222222);
+					}
+					
+
+				}else{
+					for (var j:int = 0; j < arr.length; j++){
+						out.push(v(subType,arr[j]));
+					}
+				}
+				return out;
+			}else{
+				return v(i,val.text);
+			}
 			throw new Error("暂不支持");
 			return 0;
 		}
 
 		public function getData():LineData {
+			var d:LineData=new LineData();
+			d.type=getType();
+			d.name=tname.text;
+			d.desc=desc.text;
+			d.val=value;
+			return d;
+		}
+		public function getDataString():LineData {
 			var d:LineData=new LineData();
 			d.type=getType();
 			d.name=tname.text;

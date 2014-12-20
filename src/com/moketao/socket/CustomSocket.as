@@ -8,8 +8,9 @@ package com.moketao.socket {
 	import flash.external.ExternalInterface;
 	import flash.net.Socket;
 	
-	import cmds.CommandMap;
 	import cmds.C1000Down;
+	import cmds.C1002Down;
+	import cmds.CommandMap;
 	
 	import mycom.Alert;
 
@@ -138,7 +139,7 @@ package com.moketao.socket {
 		private function getMsg(b:CustomByteArray):void {
 			b.traceBytes();
 			b.position=2;
-			var c:C1000Down = new C1000Down();
+			var c:C1002Down = new C1002Down();
 			c.UnPackFrom(b);
 			trace(c);
 			return;/////////////////恢复回来

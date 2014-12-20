@@ -1,0 +1,13 @@
+{
+	"type": "Down",
+	"desc": "数组测试",
+	"name": "1002",
+	"arr": [
+		{
+			"type": "Array",
+			"val": "",
+			"desc": "[8]",
+			"name": "arr"
+		}
+	]
+}

@@ -4,6 +4,6 @@ package com.moketao.socket.save {
 		public var desc:String;
 		public var name:String;
 		public var type:String;
-		public var val:String;
+		public var val:Object;
 	}
 }

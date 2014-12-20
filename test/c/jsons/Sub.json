@@ -1,13 +1,19 @@
 {
 	"type": "Up",
 	"desc": "sdafadf",
+	"name": "Sub",
 	"arr": [
 		{
 			"type": "8",
-			"val": "1",
-			"desc": "adsfsadf",
-			"name": "f1"
+			"val": "",
+			"desc": "s1",
+			"name": "s1"
+		},
+		{
+			"type": "16",
+			"val": "",
+			"desc": "s2",
+			"name": "s2"
 		}
-	],
-	"name": "Sub"
+	]
 }

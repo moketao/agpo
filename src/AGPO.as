@@ -28,12 +28,12 @@ package {
 	import flash.net.URLLoaderDataFormat;
 	import flash.net.URLRequest;
 	
+	import cmds.CommandMap;
 	import cmds.bak.C10000Up;
 	import cmds.bak.C12000Down;
 	import cmds.bak.C12000Up;
 	import cmds.bak.C12001Down;
 	import cmds.bak.C12001Up;
-	import cmds.CommandMap;
 	
 	import common.baseData.F32;
 	import common.baseData.F64;
@@ -133,6 +133,7 @@ package {
 			}
 			for (var i:int=0; i < body.numChildren; i++) {
 				var d:LineData=(body.getChildAt(i) as Line).getData();
+				//var d:LineData=(body.getChildAt(i) as Line).getDataString();
 				if (!d.type || !d.name) {
 					Alert.show("未填写完整");
 					return;
@@ -160,7 +161,7 @@ package {
 			for (var p:int=0; p < body.numChildren; p++) {
 				var line:Line=body.getChildAt(p) as Line;
 				var dd:LineData=line.getData();
-				var val:String = dd.val?dd.val:"";
+				var val:String = (dd.val as String)?(dd.val as String):"";
 				arr.push({name:dd.name,desc:dd.desc,type:dd.type,val:val});
 			}
 			var json:String = JSON.stringify(ob,null,"\t");

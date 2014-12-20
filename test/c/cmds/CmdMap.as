@@ -19,6 +19,7 @@ package cmds {
 		private function configCMD():void {
 			//dicStart
 			_CMDDic[1000]=C1000Down;
+			_CMDDic[1002]=C1002Down;
 			//dicEnd
 		}
 

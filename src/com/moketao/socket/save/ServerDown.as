@@ -106,6 +106,7 @@ package com.moketao.socket.save {
 					packs+="	p." + toWriteFunc(d.type) + "(s." + d.name + ")" + "//" + d.desc + "\n";
 				} else {
 					packs+="	count := len(s." + d.name + ")//数组长度（" + d.desc + "）\n";
+					packs+="	p.WriteUint16(uint16(count))\n";
 					packs+="	for i := 0; i < count; i++ {\n";
 					if (isClass(nodeClassName)) {
 						packs+="		s." + d.name + "[i].PackInTo(p)\n";
