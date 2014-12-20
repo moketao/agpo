@@ -29,6 +29,7 @@ package {
 	import flash.net.URLRequest;
 	
 	import cmds.CommandMap;
+	import cmds.Sub;
 	import cmds.bak.C10000Up;
 	import cmds.bak.C12000Down;
 	import cmds.bak.C12000Up;
@@ -56,15 +57,15 @@ package {
 		public function AGPO() {
 			//script
 			Script.init(this);
+
+			//class
+			var classs:Array = [Sub];
 			
 			//net
 			s=CustomSocket.getInstance();
-
+			start();
+						
 			//ui
-			com.bit101.components.Style.embedFonts=false;
-			com.bit101.components.Style.fontName="Consolas";
-			com.bit101.components.Style.fontSize=12;
-
 			this.addEventListener(Event.ADDED_TO_STAGE, init);
 		}
 
@@ -132,8 +133,8 @@ package {
 				return;
 			}
 			for (var i:int=0; i < body.numChildren; i++) {
-				var d:LineData=(body.getChildAt(i) as Line).getData();
-				//var d:LineData=(body.getChildAt(i) as Line).getDataString();
+				//var d:LineData=(body.getChildAt(i) as Line).getData();
+				var d:LineData=(body.getChildAt(i) as Line).getDataString();
 				if (!d.type || !d.name) {
 					Alert.show("未填写完整");
 					return;
@@ -160,7 +161,7 @@ package {
 			ob.arr = arr;
 			for (var p:int=0; p < body.numChildren; p++) {
 				var line:Line=body.getChildAt(p) as Line;
-				var dd:LineData=line.getData();
+				var dd:LineData=line.getDataString();
 				var val:String = (dd.val as String)?(dd.val as String):"";
 				arr.push({name:dd.name,desc:dd.desc,type:dd.type,val:val});
 			}
@@ -234,10 +235,10 @@ package {
 		}
 
 		public function init(e:Event):void {
-			//net
-			start();
 
-			//ui
+			com.bit101.components.Style.embedFonts=false;
+			com.bit101.components.Style.fontName="Consolas";
+			com.bit101.components.Style.fontSize=12;
 			new Alert(stage);
 			new CommandMap();
 			var win:HBox=new HBox(this);

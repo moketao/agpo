@@ -1,13 +1,13 @@
 {
 	"type": "Up",
-	"desc": "数组测试",
-	"name": "1002",
 	"arr": [
 		{
 			"type": "Array",
-			"val": "",
-			"desc": "[Sub]",
-			"name": "arr"
+			"val": "[{\"s1\":1,\"s2\":-1},{\"s1\":2,\"s2\":-2}]",
+			"name": "arr",
+			"desc": "[Sub]"
 		}
-	]
+	],
+	"name": "1002",
+	"desc": "数组测试"
 }

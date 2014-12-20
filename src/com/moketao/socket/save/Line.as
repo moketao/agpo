@@ -11,6 +11,7 @@ package com.moketao.socket.save {
 	import flash.display.DisplayObjectContainer;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
+	import flash.utils.describeType;
 	import flash.utils.getDefinitionByName;
 	import flash.utils.setTimeout;
 	
@@ -82,20 +83,22 @@ package com.moketao.socket.save {
 					subType = match[1];
 				}
 				if(TYPES.indexOf(subType)<0){
+					if(val.text=="") return [];
 					var obArr:Array = JSON.parse(val.text) as Array;
+					var outArr:Array = [];
 					for (var k:int = 0; k < obArr.length; k++){
 						var aob:Object = obArr[k];
 						var aclass:Class = flash.utils.getDefinitionByName("cmds."+subType) as Class;
 						var ob:* = new aclass();
-						trace(11111111111111);
-						for(var q:String in ob){
-							//ob[i] = aob[i];
-							trace(q);
+						var d:XML = flash.utils.describeType(ob);
+						var list:XMLList = d.variable.@name;
+						for (var i2:int = 0; i2 < list.length(); i2++){
+							var s:String = (list[i2] as XML).toString();
+							ob[s] = aob[s];
 						}
-						trace(2222222222222);
+						outArr.push(ob);
 					}
-					
-
+					return outArr;
 				}else{
 					for (var j:int = 0; j < arr.length; j++){
 						out.push(v(subType,arr[j]));

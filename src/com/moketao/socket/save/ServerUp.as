@@ -15,7 +15,7 @@ import (
 
 type ACMD struct {
 	Code uint16                                                        //协议号
-	Func func(uint16, *link.InBuffer, *link.Session) *link.OutBufferBE //协议号对应函数
+	Func func(uint16, *link.InBufferBE, *link.Session) *link.OutBufferBE //协议号对应函数
 }
 
 var DIC map[uint16]ACMD = map[uint16]ACMD{} //以字典形式存在的协议
@@ -100,11 +100,11 @@ func init() {
 				if (d.type != "Array") {
 					unpacks+="	s." + d.name+" = " + toReadFunc(d.type) + "//" + d.desc + "\n";
 				} else {
-					unpacks+="	count := int(p.ReadUint16())//数组长度（" + d.desc + "）\n";
+					unpacks+="	count := int(b.ReadUint16())//数组长度（" + d.desc + "）\n";
 					unpacks+="	for i := 0; i < count; i++ {\n";
 					if (isClass(nodeClassName)) {
 						unpacks+="		node := new(" + nodeClassName + ")\n";
-						unpacks+="		s." + d.name + " = append(s." + d.name + ", node.UnPackFrom(p))\n";
+						unpacks+="		s." + d.name + " = append(s." + d.name + ", node.UnPackFrom(b))\n";
 					} else {
 						unpacks+="		s." + d.name + " = append(s." + d.name + ", " + toReadFunc(nodeClassName) + ")\n";
 					}
@@ -162,9 +162,8 @@ func init() {
 				out+="type C" + main.cmd_name.text + "Up struct {\n";
 				out+=fields;
 				out+="}\n\n";
-				out+="func f" + main.cmd_name.text + "Up(c uint16, b *link.InBuffer, u *link.Session) *link.OutBufferBE {\n";
+				out+="func f" + main.cmd_name.text + "Up(c uint16, b *link.InBufferBE, u *link.Session) *link.OutBufferBE {\n";
 				out+="	s := new(C" + main.cmd_name.text + "Up)\n";
-				out+="	p := *b\n";
 				out+=unpacks;
 				out+="	res := new(C" + main.cmd_name.text + "Down)\n";
 				out+="	//业务逻辑：\n";

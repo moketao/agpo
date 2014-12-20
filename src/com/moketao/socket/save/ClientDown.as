@@ -15,7 +15,7 @@ package com.moketao.socket.save {
 			}
 			for (var i:int=0; i < main.body.numChildren; i++) {
 				var line:Line=main.body.getChildAt(i) as Line;
-				var d:LineData=line.getData();
+				var d:LineData=line.getDataString();
 				fields+="		public var " + d.name + ":" + toTypeString(d.type) + ";//" + d.type + "，" + d.desc + "\n";
 				var nodeClassName:String=getClassName(d.desc);
 				if (d.type != "Array") {

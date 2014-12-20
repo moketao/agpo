@@ -5,14 +5,14 @@ import (
 )
 
 type C1002Down struct {
-	arr []int8  //Array，[8]
+	arr []Sub  //Array，[Sub]
 }
 
 func (s *C1002Down)PackInTo(p *link.OutBufferBE ) {
-	count := len(s.arr)//数组长度（[8]）
+	count := len(s.arr)//数组长度（[Sub]）
 	p.WriteUint16(uint16(count))
 	for i := 0; i < count; i++ {
-		p.WriteInt8(s.arr[i])
+		s.arr[i].PackInTo(p)
 	}
 }
 func (s *C1002Down)ToBuffer() *link.OutBufferBE {

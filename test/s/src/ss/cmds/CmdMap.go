@@ -7,8 +7,8 @@ import (
 )
 
 type ACMD struct {
-	Code uint16                                                        //协议号
-	Func func(uint16, *link.InBuffer, *link.Session) *link.OutBufferBE //协议号对应函数
+	Code uint16                                                          //协议号
+	Func func(uint16, *link.InBufferBE, *link.Session) *link.OutBufferBE //协议号对应函数
 }
 
 var DIC map[uint16]ACMD = map[uint16]ACMD{} //以字典形式存在的协议
