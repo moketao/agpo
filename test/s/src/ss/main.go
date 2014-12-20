@@ -31,7 +31,7 @@ func main() {
 	server.AcceptLoop(func(session *link.Session) {
 		println("client", session.Conn().RemoteAddr().String(), "in")
 		channel.Join(session, nil)
-		session.ReadLoop(func(msg0 link.InBuffer) {
+		session.ReadLoop(func(msg link.InBuffer) {
 			//msg, _ := (&msg0).(link.InBufferBE)
 			cmd := msg.ReadUint16()
 			fmt.Println("收到协议", cmd)
