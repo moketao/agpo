@@ -17,7 +17,7 @@ func (s *C1002Down)PackInTo(p *link.OutBufferBE ) {
 }
 func (s *C1002Down)ToBuffer() *link.OutBufferBE {
 	p := new(link.OutBufferBE)
-	p.WriteUint16(1002) //写入协议号
+	(*p).WriteUint16(1002) //写入协议号
 	s.PackInTo(p)
 	return p
 }

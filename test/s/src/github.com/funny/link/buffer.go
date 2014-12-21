@@ -415,7 +415,6 @@ func (m *OutBufferBE) WriteInt50(v int64) {
 	} else {
 		fu = byte(1)
 	}
-	println("输出一次")
 	m.b = append(m.b,
 		fu,
 		byte(v>>48),

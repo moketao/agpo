@@ -34,14 +34,14 @@ func main() {
 		session.ReadLoop(func(msg link.InBuffer) {
 			//msg, _ := (&msg0).(link.InBufferBE)
 			cmd := msg.ReadUint16()
-			fmt.Println("收到协议", cmd)
+			fmt.Println("收到：", cmd)
 			TraceBytes(msg.Get())
 			res := DIC[cmd].Func(cmd, &msg, session)
 			////channel.Broadcast(outBuffer.Get())
 			session.SendPacket(res)
 
-			fmt.Print("发送")
-			TraceBytes(res.Get())
+			fmt.Print("发送：")
+			TraceBytes((*res).Get())
 		})
 
 		println("client", session.Conn().RemoteAddr().String(), "close")

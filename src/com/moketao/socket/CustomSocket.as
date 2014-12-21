@@ -10,6 +10,8 @@ package com.moketao.socket {
 	
 	import cmds.C1000Down;
 	import cmds.C1002Down;
+	import cmds.C1003Down;
+	import cmds.CmdMap;
 	import cmds.CommandMap;
 	
 	import mycom.Alert;
@@ -39,7 +41,7 @@ package com.moketao.socket {
 			if (one != null) {
 				throw new Error("单例模式类")
 			}
-			_cmdMap=CommandMap.getInstance();
+			_cmdMap=CmdMap.getInstance();
 			_ccmdParseDic=new HashMap();
 			_scmdParseDic=new HashMap();
 		}
@@ -139,14 +141,14 @@ package com.moketao.socket {
 		private function getMsg(b:CustomByteArray):void {
 			b.traceBytes();
 			b.position=2;
-			var c:C1002Down = new C1002Down();
+			var c:C1000Down = new C1000Down();
 			c.UnPackFrom(b);
 			trace(c);
 			return;/////////////////恢复回来
 			var num:int = b.readUnsignedShort();
 			var vo:*;
 			if(b.bytesAvailable>0){
-				var ob:Object = CommandMap.getCmdOB(num);
+				var ob:Object = CmdMap.getCmdOB(num);
 				var i:ISocketDown = ob as ISocketDown;
 				vo = i.UnPackFrom(b);
 			}
@@ -213,7 +215,7 @@ package com.moketao.socket {
 			}
 
 		}
-		private var _cmdMap:CommandMap;
+		private var _cmdMap:CmdMap;
 		private var _ccmdParseDic:HashMap;
 		private var _scmdParseDic:HashMap;
 		private var _cmdArray:Array=[];

@@ -189,4 +189,6 @@ type OutBuffer interface {
 
 	// Write a float64 value into buffer.
 	WriteFloat64(v float64)
+
+	WriteInt50(v int64)
 }

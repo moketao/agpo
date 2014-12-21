@@ -7,8 +7,8 @@ import (
 )
 
 type ACMD struct {
-	Code uint16                                                          //协议号
-	Func func(uint16, *link.InBufferBE, *link.Session) *link.OutBufferBE //协议号对应函数
+	Code uint16                                                        //协议号
+	Func func(uint16, *link.InBuffer, *link.Session) *link.OutBufferBE //协议号对应函数
 }
 
 var DIC map[uint16]ACMD = map[uint16]ACMD{} //以字典形式存在的协议
@@ -18,6 +18,7 @@ type CmdStuct struct {
 	//moeditor struct start
 	C1000up ACMD
 	C1002up ACMD
+	C1003up ACMD
 	//moeditor struct end
 }
 
@@ -25,6 +26,7 @@ func init() {
 	//moeditor init start
 	CMD.C1000up = ACMD{1000, f1000Up}
 	CMD.C1002up = ACMD{1002, f1002Up}
+	CMD.C1003up = ACMD{1003, f1003Up}
 	//moeditor init end
 
 	//利用reflect解析结构

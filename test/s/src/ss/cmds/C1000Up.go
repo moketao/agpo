@@ -18,7 +18,7 @@ type C1000Up struct {
 	a11 uint64  //u64，11
 }
 
-func f1000Up(c uint16, b *link.InBufferBE, u *link.Session) *link.OutBufferBE {
+func f1000Up(c uint16, b *link.InBuffer, u *link.Session) *link.OutBufferBE {
 	s := new(C1000Up)
 	p := *b
 	s.a1 = p.ReadInt8()                      //1
@@ -45,5 +45,6 @@ func f1000Up(c uint16, b *link.InBufferBE, u *link.Session) *link.OutBufferBE {
 	res.a9 = s.a9
 	res.a10 = s.a10
 	res.a11 = s.a11
+
 	return res.ToBuffer()
 }

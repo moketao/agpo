@@ -15,7 +15,7 @@ import (
 
 type ACMD struct {
 	Code uint16                                                        //协议号
-	Func func(uint16, *link.InBufferBE, *link.Session) *link.OutBufferBE //协议号对应函数
+	Func func(uint16, *link.InBuffer, *link.Session) *link.OutBufferBE //协议号对应函数
 }
 
 var DIC map[uint16]ACMD = map[uint16]ACMD{} //以字典形式存在的协议
@@ -100,7 +100,7 @@ func init() {
 				if (d.type != "Array") {
 					unpacks+="	s." + d.name+" = " + toReadFunc(d.type) + "//" + d.desc + "\n";
 				} else {
-					unpacks+="	count := int(b.ReadUint16())//数组长度（" + d.desc + "）\n";
+					unpacks+="	count := int(p.ReadUint16())//数组长度（" + d.desc + "）\n";
 					unpacks+="	for i := 0; i < count; i++ {\n";
 					if (isClass(nodeClassName)) {
 						unpacks+="		node := new(" + nodeClassName + ")\n";
@@ -119,7 +119,7 @@ func init() {
 					packs+="	count := len(s." + d.name + ")//数组长度（" + d.desc + "）\n";
 					packs+="	for i := 0; i < count; i++ {\n";
 					if (isClass(nodeClassName)) {
-						packs+="		s." + d.name + "[i].PackInTo(p)\n";
+						packs+="		s." + d.name + "[i].PackInTo(&p)\n";
 					} else {
 						packs+="		" + toWriteFunc(nodeClassName) + "(s." + d.name + "[i])\n";
 					}
@@ -137,16 +137,18 @@ func init() {
 				out+="type " + fileName + " struct {\n";
 				out+=fields;
 				out+="}\n\n";
-				out+="func (s *" + fileName + ") UnPackFrom(p *link.InBufferBE) " + fileName + " {\n";
+				out+="func (s *" + fileName + ") UnPackFrom(b *link.InBuffer) " + fileName + " {\n";
+				out+="	p := *b\n";
 				out+=unpacks;
 				out+="	return *s\n";
 				out+="}\n\n";
 				out+="func (s *" + fileName + ") PackInTo(p *link.OutBufferBE) {\n";
+				//out+="	p := *b\n";
 				out+=packs;
 				out+="}\n\n";
 				out+="func (s *"+fileName+")ToBuffer(cmdID uint16) *link.OutBufferBE {\n";
 				out+="	p := new(link.OutBufferBE)\n";
-				out+="	p.WriteUint16(cmdID) //写入协议号\n";
+				out+="	(*p).WriteUint16(cmdID) //写入协议号\n";
 				out+="	s.PackInTo(p)\n";
 				out+="	return p\n";
 				out+="}\n";
@@ -162,8 +164,9 @@ func init() {
 				out+="type C" + main.cmd_name.text + "Up struct {\n";
 				out+=fields;
 				out+="}\n\n";
-				out+="func f" + main.cmd_name.text + "Up(c uint16, b *link.InBufferBE, u *link.Session) *link.OutBufferBE {\n";
+				out+="func f" + main.cmd_name.text + "Up(c uint16, b *link.InBuffer, u *link.Session) *link.OutBufferBE {\n";
 				out+="	s := new(C" + main.cmd_name.text + "Up)\n";
+				out+="	p := *b\n";
 				out+=unpacks;
 				out+="	res := new(C" + main.cmd_name.text + "Down)\n";
 				out+="	//业务逻辑：\n";

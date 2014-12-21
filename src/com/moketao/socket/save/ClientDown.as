@@ -25,7 +25,7 @@ package com.moketao.socket.save {
 					packs+="			b.WriteUint16(" + len + ");//写入数组长度，（" + d.desc + "）\n";
 					packs+="			for(var i:int=0;i<" + len + ";i++){ \n";
 					if (isClass(nodeClassName)) {
-						packs+="				(" + d.name + "[i] as " + nodeClassName + ").PackInTo(b);\n";
+						packs+="				" + d.name + "[i].PackInTo(b);\n";
 					} else {
 						packs+="				" + toWriteFunc(nodeClassName) + "(" + d.name + "[i]);\n";
 					}

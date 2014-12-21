@@ -28,13 +28,10 @@ package {
 	import flash.net.URLLoaderDataFormat;
 	import flash.net.URLRequest;
 	
-	import cmds.CommandMap;
+	import cmds.CmdMap;
 	import cmds.Sub;
-	import cmds.bak.C10000Up;
 	import cmds.bak.C12000Down;
-	import cmds.bak.C12000Up;
 	import cmds.bak.C12001Down;
-	import cmds.bak.C12001Up;
 	
 	import common.baseData.F32;
 	import common.baseData.F64;
@@ -240,12 +237,13 @@ package {
 			com.bit101.components.Style.fontName="Consolas";
 			com.bit101.components.Style.fontSize=12;
 			new Alert(stage);
-			new CommandMap();
+			new CmdMap();
 			var win:HBox=new HBox(this);
 			var win_left:VBox=new VBox(win);
 			win_left.setSize(200, stage.stageHeight - 20);
 			filter=new ComboBox(win_left,0,0,"",["全部","上行","下行"]); filter.selectedIndex=0;
 			cmdlist=new List(win_left,0,0,[]);
+			cmdlist.height = 300;
 			cmdlist.addEventListener(Event.SELECT,function(e:*):void{
 				show(cmdlist.selectedItem.data);
 			});

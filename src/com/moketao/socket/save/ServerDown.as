@@ -127,11 +127,13 @@ package com.moketao.socket.save {
 				out+="type " + fileName + " struct {\n";
 				out+=fields;
 				out+="}\n\n";
-				out+="func (s *" + fileName + ") UnPackFrom(p *link.InBufferBE ) " + fileName + " {\n";
+				out+="func (s *" + fileName + ") UnPackFrom(b *link.InBuffer ) " + fileName + " {\n";
+				out+="	p := *b\n";
 				out+=unpacks;
 				out+="	return *s\n";
 				out+="}\n\n";
 				out+="func (s *" + fileName + ") PackInTo(p *link.OutBufferBE ) {\n";
+				//out+="	p := *b\n";
 				out+=packs;
 				out+="}\n\n";
 				out+="func (s *"+fileName+")ToBuffer() *link.OutBufferBE {\n";
@@ -152,11 +154,12 @@ package com.moketao.socket.save {
 				out+=fields;
 				out+="}\n\n";
 				out+="func (s *C"+main.cmd_name.text+"Down)PackInTo(p *link.OutBufferBE ) {\n";
+				//out+="	p := *b\n";
 				out+=packs;
 				out+="}\n";
 				out+="func (s *C"+main.cmd_name.text+"Down)ToBuffer() *link.OutBufferBE {\n";
 				out+="	p := new(link.OutBufferBE)\n";
-				out+="	p.WriteUint16("+main.cmd_name.text+") //写入协议号\n";
+				out+="	(*p).WriteUint16("+main.cmd_name.text+") //写入协议号\n";
 				out+="	s.PackInTo(p)\n";
 				out+="	return p\n";
 				out+="}\n";

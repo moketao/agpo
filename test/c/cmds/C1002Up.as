@@ -10,7 +10,7 @@ import com.moketao.socket.CustomByteArray;
 		public function PackInTo(b:CustomByteArray):void{
 			b.WriteUint16(arr.length);          //写入数组长度，（[Sub]）
 			for(var i:int=0;i<arr.length;i++){ 
-				(arr[i] as Sub).PackInTo(b);
+				arr[i].PackInTo(b);
 			}
 		}
 	}
